@@ -16,26 +16,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # canonical id
 }
 
-resource "aws_launch_configuration" "launch_configuration_ubuntu" {
-  name_prefix   = "launch_configuration_ubuntu"
-  image_id      = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  security_groups = [aws_security_group.launch_config_security_group.id]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              touch /tmp/filetest.txt
-              sudo apt-get install nginx -y
-              echo 'launch config sample 1' > /var/www/html/index.html
-              sudo systemctl --now enable nginx
-              EOF
-}
-
 ### get default vpc
 data "aws_vpc" "selected" {
   default = true
@@ -97,6 +77,26 @@ resource "aws_security_group" "alb_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_launch_configuration" "launch_configuration_ubuntu" {
+  name_prefix   = "launch_configuration_ubuntu"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = "t2.micro"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  security_groups = [aws_security_group.launch_config_security_group.id]
+
+  user_data = <<-EOF
+              #!/bin/bash
+              touch /tmp/filetest.txt
+              sudo apt-get install nginx -y
+              echo 'launch config sample 1' > /var/www/html/index.html
+              sudo systemctl --now enable nginx
+              EOF
 }
 
 resource "aws_autoscaling_group" "asg-sample" {
