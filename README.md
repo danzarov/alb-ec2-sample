@@ -12,3 +12,5 @@
  - build a target group (linked to the auto scaling group instances)
  - build a load balancer (application)
  - build a listener for the load balancer (forwards traffic to the target group)
+
+![Image](images/asg-ec2-sample.png?raw=true)
